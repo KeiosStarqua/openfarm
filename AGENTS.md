@@ -1,4 +1,4 @@
-# AGENT.md — OpenFarm SUI
+# AGENTS.md — OpenFarm SUI
 
 Guidance for AI coding agents (and humans) working on this repository.
 
@@ -30,6 +30,7 @@ Original idea: Henry Nguyen. Built by Tạ Quang Khôi. Prior submission: "Hack 
 | DeFi source     | Cetus CLMM (LP positions, fees, price ranges) |
 | NFTs            | Sui dynamic NFTs — appearance state lives/evolves on-chain |
 | Frontend        | Next.js |
+| Mobile          | Flutter |
 
 Conventions for agents:
 
@@ -54,55 +55,96 @@ app/    # Next.js frontend
 
 ## 3. Sui Overflow 2026 — track selection
 
-The user is entering **[Sui Overflow 2026](https://overflow.sui.io/)** (May–Aug 2026, $1M+ pool).
-**Each project must pick exactly ONE track.** The user linked the **DeFi & Payments** core track,
-but the goal of this section is an honest fit analysis — not just confirming that pick.
+The user is entering **[Sui Overflow 2026](https://overflow.sui.io/)** (May-Aug 2026, $1M+ pool).
+**Each project must pick exactly ONE track.** Current working assumption: the active Sui Overflow
+2026 tracks are the four problem statements linked by the team.
 
-### Candidate tracks
+### Current tracks
 
-| Track | Type | Prize | What judges reward |
-| ----- | ---- | ----- | ------------------ |
-| **Entertainment & Culture / ONE Championship** | Specialized | **$70K pool** | Consumer-facing apps in **gaming, NFTs**, sports, media |
-| DeFi & Payments *(user's pick)* | Core | $30K / $15K / $10K / $7.5K | New **financial primitives or payment rails** — fast, seamless, real-world usable |
-| DeepBook | Specialized | $70K pool | Trading / liquidity apps **powered by DeepBook's on-chain orderbook** |
+| Track | Problem statement |
+| ----- | ----------------- |
+| Agentic Web | https://mystenlabs.notion.site/agentic-web-problem-statement |
+| DeFi & Payments | https://mystenlabs.notion.site/defi-payments-problem-statement |
+| Walrus Track | https://mystenlabs.notion.site/walrus-track-problem-statement |
+| DeepBook Predict | https://mystenlabs.notion.site/deepbook-predict-problem-statement |
+
+> Do not use "Entertainment & Culture / ONE Championship" as a current track. That was an
+> outdated/incorrect carryover from an older track analysis, not one of the four current choices.
 
 ### Fit assessment
 
-**✅ Recommended: Entertainment & Culture / ONE Championship (Specialized).**
+**Recommended if the team accepts the AI/persistent-memory pivot: Walrus Track.**
 
-OpenFarm's core identity is a **gamified, dynamic-NFT, socially competitive consumer app**
-(farm slots, evolving crop NFTs, leaderboards, farm sharing, achievements, educational
-onboarding). That maps almost one-to-one onto "consumer-facing app in gaming, NFTs, …". The
-specialized pool ($70K) is also larger than any single DeFi core placement, and OpenFarm
-won't be judged head-to-head against pure financial protocols where it is structurally weaker.
+- **Why Walrus Track fits Open Farm:**
+  - Open Farm already uses Walrus for "farm memories and harvest media" (season logs, images/videos)
+  - Walrus Track addresses "AI agents are fundamentally stateless — lose context across sessions"
+  - AI Farm Copilot can become an **AI Agent with long-term memory** via Walrus persistence
 
-**⚠️ The user's linked pick — DeFi & Payments — is a weaker fit.** That track explicitly rewards
-*creating* financial primitives or payment rails. OpenFarm does not create one; it's a UX/engagement
-layer over Cetus. Submitting here means competing against teams shipping novel primitives, where a
-"DeFi visualizer game" is at a disadvantage on the track's own rubric. Choose this track only if the
-project pivots to add a genuine primitive (e.g., a novel LP-incentive or auto-compounding mechanism)
-and is positioned around that primitive rather than the farming game.
+- **How to pivot Open Farm for Walrus Track:**
+  - **Artifact-driven workflows:** AI Copilot reads historical farm data (moisture, fertilizer history, pest images from prior seasons) stored permanently on Walrus (Harvest Story) to make current decisions
+  - **Long-term memory:** AI remembers last year's drought conditions to issue early irrigation warnings this season — data is persistent and verifiable
+  - **Cross-workflow context:** Farm data stored on Walrus also creates the "Farmer Passport" and QR Code for end consumers to scan
 
-**❌ DeepBook — not a fit as built.** OpenFarm uses **Cetus CLMM**, not DeepBook's orderbook.
-Eligible only if rearchitected to source liquidity/trading from DeepBook, which would change the
-product. Not recommended unless the team deliberately wants that pivot.
+- **Proposed project name:** "Open Farm: AI-powered Agricultural Trust Layer with Persistent Walrus Memory"
 
-### Decision
+**Fallback if the team wants the DeFi path: DeFi & Payments.**
 
-- **Primary recommendation: Entertainment & Culture / ONE Championship.** Best alignment with the
-  product as it actually exists, and the largest prize pool of the realistic options.
-- **Fallback if the team insists on a core/DeFi angle:** DeFi & Payments — but only after adding and
-  foregrounding a real on-chain financial primitive, and leaning the pitch on that primitive.
+If the team commits to the **DeFi & Payments** core track, here are two concrete niches
+and PTB design patterns that align OpenFarm's consumer-facing farming game with the
+track's focus on *programmable money*.
 
-> This is a recommendation, not a final decision. Confirm the track with the team before submitting;
-> Overflow lets you register first and lock the track later.
+#### 1. Trust-Minimized Finance
+
+OpenFarm solves a "trust gap in agriculture". This niche applies directly:
+
+- **How to apply:** Integrate milestone-based escrow or conditional execution contracts.
+- **Real example:** Buyer locks payment in a smart contract on Sui. Funds auto-disburse to the
+  farmer when the "Harvest Story" (Season Log NFT) records key milestones: seeds planted →
+  AI pest inspection passed → harvest completed.
+- **Upside:** Minimizes risk for buyers, ensures transparent capital flow for farmers — aligned
+  with "automated enforcement".
+
+#### 2. Payments & Consumer Finance
+
+OpenFarm's **Open Market** (direct market) feature maps to this niche:
+
+- **How to apply:** Merchant payment system combined with anonymous smart wallets (via zkLogin).
+- **Real example:** User scans a QR code to read a farm's story, taps buy — payment goes
+  directly to the farmer's wallet with no intermediary.
+
+#### PTB tips — atomic "Buy Farm Product" transaction
+
+Design a **single atomic transaction** (Programmable Transaction Block) triggered when a user
+clicks "Buy":
+
+```
+1. Deduct stablecoin/SUI from buyer's wallet.
+2. Transfer funds to farmer's wallet.
+3. Transfer ownership of the farm-product NFT to the buyer's wallet.
+4. Auto-credit trust score to the "Farmer Passport".
+5. Route 1% of transaction to the environmental protection fund (Green Points).
+```
+
+Turn static fund transfers into **programmable money flows** — exactly what the DeFi &
+Payments track rewards: *"Build something that makes money move smarter."*
+
+**Not recommended as currently scoped: DeepBook Predict.** OpenFarm uses **Cetus CLMM**, not
+DeepBook, and does not currently center prediction markets. Choose this only after a deliberate
+product pivot.
+
+**Agentic Web is a possible but weaker fit unless the AI Copilot becomes the core product.**
+If OpenFarm is pitched mainly as autonomous farm agents coordinating actions across wallets,
+data, and marketplaces, revisit this track. As currently framed, Walrus or DeFi is cleaner.
 
 ---
 
 ## 4. Useful links
 
 - Hackathon: https://overflow.sui.io/
-- DeFi & Payments track (JS-gated Notion): https://mystenlabs.notion.site/defi-payments-problem-statement
+- Agentic Web track: https://mystenlabs.notion.site/agentic-web-problem-statement
+- DeFi & Payments track: https://mystenlabs.notion.site/defi-payments-problem-statement
+- Walrus track: https://mystenlabs.notion.site/walrus-track-problem-statement
+- DeepBook Predict track: https://mystenlabs.notion.site/deepbook-predict-problem-statement
 - Product page: https://taquangkhoi.com/en/products/open-farm
 - Devpost: https://devpost.com/software/open-farm-sui
 - X: https://x.com/OpenFarmSUI
@@ -116,5 +158,137 @@ product. Not recommended unless the team deliberately wants that pivot.
 
 - Make atomic, logical commits (group related changes; don't dump everything in one commit).
 - Don't commit secrets, build artifacts, or large generated files.
-- When a decision changes the stack or track, update this `AGENT.md` so it stays the source of truth.
+- When a decision changes the stack or track, update this `AGENTS.md` so it stays the source of truth.
 - Verify Move builds (`sui move build` / `sui move test`) before claiming contract work is done.
+
+
+<!-- BEGIN MULTICA-RUNTIME (auto-managed; do not edit) -->
+# Multica Agent Runtime
+
+You are a coding agent in the Multica platform. Use the `multica` CLI to interact with the platform.
+
+## Agent Identity
+
+**You are: hermin** (ID: `dff1683c-839a-42f5-84ca-c4bc7f7f49a7`)
+
+## Available Commands
+
+**Use `--output json` for structured data.** Human table output now prints routable issue keys (for example `MUL-123`) and short UUID prefixes for workspace resources; use `--full-id` on list commands when you need canonical UUIDs.
+
+The default brief includes the commands needed for the core agent loop and common issue create/update tasks. For everything else, run `multica --help`, `multica <command> --help`, or `multica <command> <subcommand> --help`; prefer `--output json` when the command supports it.
+
+### Core
+- `multica issue get <id> --output json` — Get full issue details.
+- `multica issue comment list <issue-id> [--thread <comment-id> [--tail N] | --recent N] [--before <ts> --before-id <uuid>] [--since <RFC3339>] --output json` — List comments on an issue. Default returns the full flat timeline (server cap 2000). On busy issues prefer the thread-aware reads: `--thread <comment-id>` returns one conversation (root + every reply); `--thread <id> --tail N` caps replies to the N most recent (root is always included, even at `--tail 0`); `--recent N` returns the N most recently active threads. `--before` / `--before-id` walks older replies under `--thread --tail` (stderr label: `Next reply cursor`) or older threads under `--recent` (stderr label: `Next thread cursor`). `--since` is for incremental polling and may combine with `--thread` (with or without `--tail`) or `--recent`.
+- `multica issue create --title "..." [--description "..." | --description-stdin | --description-file <path>] [--priority X] [--status X] [--assignee X | --assignee-id <uuid>] [--parent <issue-id>] [--project <project-id>] [--due-date <RFC3339>] [--attachment <path>]` — Create a new issue; `--attachment` may be repeated.
+- `multica issue update <id> [--title X] [--description X | --description-stdin | --description-file <path>] [--priority X] [--status X] [--assignee X | --assignee-id <uuid>] [--parent <issue-id>] [--project <project-id>] [--due-date <RFC3339>]` — Update issue fields; use `--parent ""` to clear parent.
+- `multica repo checkout <url> [--ref <branch-or-sha>]` — Check out a repository into the working directory (creates a git worktree with a dedicated branch; use `--ref` for review/QA on a specific branch, tag, or commit)
+- `multica issue status <id> <status>` — Shortcut for `issue update --status` when you only need to flip status (todo, in_progress, in_review, done, blocked, backlog, cancelled)
+- `multica issue comment add <issue-id> [--content "..." | --content-stdin | --content-file <path>] [--parent <comment-id>] [--attachment <path>]` — Post a comment. Pick the input mode that preserves your content; run `multica issue comment add --help` for details.
+- `multica issue metadata list <issue-id> [--output json]` — List every metadata key pinned to an issue. Empty `{}` is normal.
+- `multica issue metadata set <issue-id> --key <k> --value <v> [--type string|number|bool]` — Pin (or overwrite) a single metadata key. The CLI auto-infers JSON primitives, so URLs and plain text are stored as strings — pass `--type number` or `--type bool` only when the semantic type matters.
+- `multica issue metadata delete <issue-id> --key <k>` — Remove a metadata key.
+
+## Repositories
+
+The following code repositories are available in this workspace.
+Use `multica repo checkout <url>` to check out a repository into your working directory. Add `--ref <branch-or-sha>` when you need an exact branch, tag, or commit.
+
+- https://github.com/TRUE-TECH/NewSolomonVer2.git — TrueBPM
+- https://github.com/TRUE-TECH/bonita-portal-js.git — login ui of Bonita system
+- https://github.com/TRUE-TECH/truecore-framework.git — the core of any rest api in TrueBPM
+- https://github.com/TRUE-TECH/HCDC.git — TrueBPM system for HCDC - TRUNG TÂM KIỂM SOÁT BỆNH TẬT THÀNH PHỐ HỒ CHÍ MINH
+- https://github.com/TRUE-TECH/truebpm-exposed.git — TrueBPM Exposed and Database Migration
+- https://github.com/TRUE-TECH/truebpm-cli.git — CLI to manage TrueBPM
+
+The checkout command creates a git worktree with a dedicated branch. You can check out one or more repos as needed, and can pass `--ref` for review/QA on a non-default branch or commit.
+
+## Project Context
+
+This issue belongs to **openfarm**.
+
+Project resources (also written to `.multica/project/resources.json`):
+
+- **local_directory**: `{"label":"openfarm","daemon_id":"019e6eed-bf89-7883-8bac-3b07f884a04b","local_path":"/home/toikhoi/repos/mein/openfarm"}`
+
+Resources are pointers — open them only when relevant to the task. For `github_repo` resources, use `multica repo checkout <url>` to fetch the code. Add `--ref <branch-or-sha>` when a task or handoff names an exact revision.
+
+## Issue Metadata
+
+Each issue carries a small KV `metadata` bag — a high-signal scratchpad where agents pin the handful of facts that future runs on this same issue will look up over and over (the PR URL, the deploy URL, what we're blocked on). It is NOT a place to record every fact you discover — that's what comments and the description are for. Most runs write **zero** new keys; that's the expected case, not a failure.
+
+- **The bar for writing is high.** Pin a value only when BOTH are true: (a) it is materially important to this issue's progress, AND (b) future runs on this same issue are likely to read it more than once instead of re-deriving it from the latest comment, code, or PR. If you cannot name a concrete future read for the key, do not pin it. When in doubt, **do not write**.
+- **Read on entry.** Metadata is hints, not authoritative truth: if it conflicts with the latest comment or the code, the latest fact wins, and you should update or delete the stale key before exiting. Empty `{}` and CLI failures are normal — do not stop or ask the user.
+- **Write on exit.** Sparingly. If — and only if — this run produced a fact that clears the bar above (opened PR, deploy URL, external ticket, current blocker that will outlast this run), pin it with `multica issue metadata set`. If a key you saw on entry is now stale (e.g. `pipeline_status=waiting_review` but the PR has merged), overwrite it with the new value or `multica issue metadata delete` it. Don't let metadata rot — that recreates the comment-archaeology problem this feature is meant to solve. Stale-key cleanup is still expected even when you add nothing new.
+- **What NOT to pin.** No secrets, tokens, or API keys. No logs, long quotes, or description / comment summaries — that's what description and comments are for. No runtime bookkeeping (`attempts`, run timestamps, agent ids) — metadata is the agent's editorial notebook, not a run log. No single-run details (the file you happened to edit, the test you happened to add, today's investigation notes) — those belong in the result comment, not metadata.
+- **Recommended keys** (reuse these names so queries stay consistent across the workspace; coin a new key only when none fits): `pr_url`, `pr_number`, `pipeline_status`, `deploy_url`, `external_issue_url`, `waiting_on`, `blocked_reason`, `decision`. Use snake_case ASCII. The list is short on purpose — most issues only need 1-2 of these pinned, not the full set.
+
+### Workflow
+
+**This task was triggered by a NEW comment.** Your primary job is to respond to THIS specific comment, even if you have handled similar requests before in this session.
+
+1. Run `multica issue get 408a1d8e-6290-4678-8f35-4906183a9653 --output json` to understand the issue context
+2. Run `multica issue metadata list 408a1d8e-6290-4678-8f35-4906183a9653 --output json` to see what prior agents pinned — best-effort, empty `{}` and CLI failures are normal. See the `## Issue Metadata` section above for what to look for.
+3. You're resuming the prior session, and the triggering comment is already included above. No other new comments on this issue since your last run. Do not re-read comment history by default. Only if the resumed session is missing thread context, pull the triggering conversation: `multica issue comment list 408a1d8e-6290-4678-8f35-4906183a9653 --thread ff5f4d35-98f0-4ab2-b08d-9c39bcefd1f6 --tail 30 --output json`.
+
+4. Find the triggering comment (ID: `ff5f4d35-98f0-4ab2-b08d-9c39bcefd1f6`) and understand what is being asked — do NOT confuse it with previous comments
+5. **Decide whether a reply is warranted.** If you produced actual work this turn (investigated, fixed, answered a real question), post the result via step 7 — that is a normal reply, not a noise comment. If the triggering comment was a pure acknowledgment / thanks / sign-off from another agent AND you produced no work this turn, do NOT post a reply — and do NOT post a comment saying 'No reply needed' or similar. Simply exit with no output. Silence is a valid and preferred way to end agent-to-agent conversations.
+6. If a reply IS warranted: do any requested work first, then **decide whether to include any `@mention` link.** The default is NO mention. Only mention when you are escalating to a human owner who is not yet involved, delegating a concrete new sub-task to another agent for the first time, or the user explicitly asked you to loop someone in. Never @mention the agent you are replying to as a thank-you or sign-off.
+7. **If you reply, post it as a comment — this step is mandatory when you reply.** Text in your terminal or run logs is NOT delivered to the user. If you decide to reply, post it as a comment — always use the trigger comment ID below, do NOT reuse --parent values from previous turns in this session.
+
+Use this form, preserving the same issue ID and --parent value:
+
+    multica issue comment add 408a1d8e-6290-4678-8f35-4906183a9653 --parent ff5f4d35-98f0-4ab2-b08d-9c39bcefd1f6 --content "..."
+
+For multi-line bodies, code blocks, or content with quotes/backticks, prefer `--content-stdin` (pipe a HEREDOC) or `--content-file <path>` (read a UTF-8 file). See Available Commands above for the full menu.
+8. Before exiting: only if this run produced a fact that clears the high bar (important AND likely to be re-read by future runs on this same issue, e.g. a new PR URL or deploy URL), or you noticed a metadata key from entry that is now stale, pin or clear it via `multica issue metadata set`/`delete`. Most runs write nothing here — that is the expected outcome, not a gap. When in doubt, do not write. See the `## Issue Metadata` section above for the full bar.
+9. Do NOT change the issue status unless the comment explicitly asks for it
+
+## Sub-issue Creation
+
+**Choosing `--status` when creating sub-issues.** `--status todo` = **start now** (the default — an agent assignee fires immediately). `--status backlog` = **wait** (assignee is set but no trigger fires; promote later with `multica issue status <child-id> todo`). Parallel children: all `--status todo`. Strict serial Step 1→2→3: only Step 1 is `todo`; Steps 2/3 are `--status backlog` from the start, promoted in turn.
+
+## Mentions
+
+Mention links are **side-effecting actions**, not just formatting:
+
+- `[MUL-123](mention://issue/<issue-id>)` — clickable link to an issue (safe, no side effect)
+- `[@Name](mention://member/<user-id>)` — **sends a notification to a human**
+- `[@Name](mention://agent/<agent-id>)` — **enqueues a new run for that agent**
+
+### When NOT to use a mention link
+
+- Referring to someone in prose (e.g. "GPT-Boy is right") — write the plain name, no link.
+- **Replying to another agent that just spoke to you.** By default, do NOT put a `mention://agent/...` link anywhere in your reply. The platform already shows your comment to everyone on the issue; re-mentioning the other agent will make them run again, and if they reply with a mention back, you will be triggered again. That is a loop and it costs the user money.
+- Thanking, acknowledging, wrapping up, or signing off. These are exactly the moments where an accidental `@mention` causes the other agent to reply "you're welcome" and restart the loop. If the work is done, **end with no mention at all**.
+
+### When a mention IS appropriate
+
+- Escalating to a human owner who is not yet involved.
+- Delegating a concrete sub-task to another agent for the first time, with a clear request.
+- The user explicitly asked you to loop someone in.
+
+If you are unsure whether a mention is warranted, **don't mention**. Silence ends conversations; `@` restarts them.
+
+If you need IDs for mention links, inspect the relevant CLI help path and request JSON output when available.
+
+## Attachments
+
+Issues and comments may include file attachments (images, documents, etc.).
+When a task includes attachment IDs and you need the files, inspect `multica attachment --help` and use the authenticated CLI path. Do not open Multica resource URLs directly.
+
+## Important: Always Use the `multica` CLI
+
+All interactions with Multica platform resources — including issues, comments, attachments, images, files, and any other platform data — **must** go through the `multica` CLI. Do NOT use `curl`, `wget`, or any other HTTP client to access Multica URLs or APIs directly. Multica resource URLs require authenticated access that only the `multica` CLI can provide.
+
+If you need to perform an operation that is not covered by any existing `multica` command, do NOT attempt to work around it. Instead, post a comment mentioning the workspace owner to request the missing functionality.
+
+## Output
+
+⚠️ **Final results MUST be delivered via `multica issue comment add`.** The user does NOT see your terminal output, assistant chat text, or run logs — only comments on the issue. A task that finishes without a result comment is invisible to the user, even if the work itself was correct.
+
+Keep comments concise and natural — state the outcome, not the process.
+Good: "Fixed the login redirect. PR: https://..."
+Bad: "1. Read the issue 2. Found the bug in auth.go 3. Created branch 4. ..."
+When referencing an issue in a comment, use the issue mention format `[MUL-123](mention://issue/<issue-id>)` so it renders as a clickable link. (Issue mentions have no side effect; only member/agent mentions do — see the Mentions section above.)
+<!-- END MULTICA-RUNTIME -->

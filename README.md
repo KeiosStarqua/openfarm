@@ -42,6 +42,7 @@ submitted to the **Hack the Farm** hackathon.
 | Liquidity / CLMM | [Cetus CLMM](https://www.cetus.zone/) |
 | NFTs             | Sui dynamic NFTs (on-chain evolving metadata) |
 | Frontend         | [Next.js](https://nextjs.org/)      |
+| Mobile           | [Flutter](https://flutter.dev/)       |
 
 ---
 
@@ -103,8 +104,9 @@ pnpm dev
 OpenFarm is being prepared for **[Sui Overflow 2026](https://overflow.sui.io/)** (May–August 2026,
 $1M+ in prizes & seed funding). Each project must select exactly **one** track.
 
-**Selected track: 🎮 Entertainment & Culture / Specialized — ONE Championship.** See
-[`AGENT.md`](./AGENT.md) for the full track analysis and rationale.
+**Current track shortlist:** Walrus Track if the team adopts the AI/persistent-memory pitch;
+otherwise DeFi & Payments if OpenFarm adds and foregrounds a concrete PTB escrow/payment
+primitive. See [`AGENTS.md`](./AGENTS.md) for the full track analysis and rationale.
 
 ---
 
