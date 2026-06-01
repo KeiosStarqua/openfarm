@@ -160,3 +160,59 @@ data, and marketplaces, revisit this track. As currently framed, Walrus or DeFi 
 - Don't commit secrets, build artifacts, or large generated files.
 - When a decision changes the stack or track, update this `AGENTS.md` so it stays the source of truth.
 - Verify Move builds (`sui move build` / `sui move test`) before claiming contract work is done.
+
+## ACLI (Atlassian CLI) — Jira Issue Management
+
+**ACLI** (Bob Swift / Appfire Atlassian CLI) is a commercial CLI for managing Jira issues from the command line. Requires a paid license. Download from [Appfire Marketplace](https://appfire.atlassian.net/wiki/spaces/ACLI).
+
+### Authentication
+
+Configure credentials via environment variables or `.acli` config file:
+- `ATLASSIAN_CLI_USER` — Jira email
+- `ATLASSIAN_CLI_TOKEN` — Jira API token
+- `ATLASSIAN_CLI_SITE` — Jira instance URL (e.g. `your-domain.atlassian.net`)
+
+Or run `acli init` for interactive setup.
+
+### Common Commands
+
+```sh
+# Search issues with JQL
+acli jira workitem search --jql "project = PROJ AND assignee = currentUser()" --limit 50
+
+# JSON output for scripting
+acli jira workitem search --jql "project = PROJ" --json
+
+# CSV export
+acli jira workitem search --jql "project = PROJ" --csv
+
+# Fetch all results (paginate)
+acli jira workitem search --jql "project = PROJ" --paginate
+
+# Select specific fields
+acli jira workitem search --jql "project = PROJ" --fields "key,summary,assignee,status"
+
+# Count results
+acli jira workitem search --jql "project = PROJ" --count
+
+# Get single issue details
+acli jira workitem get PROJ-123
+
+# Create an issue
+acli jira workitem create --project PROJ --type Task -s "Summary here" -d "Description"
+
+# Transition issue status
+acli jira workitem transition PROJ-123 --transition "In Progress"
+
+# List projects
+acli jira project list --limit 50
+
+# List project keys (JSON + jq)
+acli jira project list --limit 50 --json | jq '.[].key'
+```
+
+### Tips
+
+- Use `--json` + `jq` for scripting pipelines
+- Use `--csv` for spreadsheet/report exports
+- Pipe through `jq '.[].key'` to extract issue/project keys
