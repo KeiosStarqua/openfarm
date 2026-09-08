@@ -4,19 +4,58 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
 } from "react"
-import type { EventKind, Ledger } from "@/lib/ledger"
+import { DEMO_STORIES } from "@/lib/demo"
 import {
   createPassport,
+  emptyLedger,
   harvestSeason,
   logEvent,
   registerFarm,
   startSeason,
+  type EventKind,
+  type Ledger,
 } from "@/lib/ledger"
 import { loadLedger, saveLedger } from "@/lib/store"
+
+const listeners = new Set<() => void>()
+const serverSnapshot = withDemo(emptyLedger())
+let memory: Ledger = serverSnapshot
+
+function withDemo(ledger: Ledger): Ledger {
+  const extra = DEMO_STORIES.filter((story) => !ledger.stories.some((item) => item.id === story.id))
+  return { ...ledger, stories: [...extra, ...ledger.stories] }
+}
+
+function emit() {
+  for (const listener of listeners) listener()
+}
+
+function subscribe(onStoreChange: () => void) {
+  listeners.add(onStoreChange)
+  return () => listeners.delete(onStoreChange)
+}
+
+function getSnapshot() {
+  return memory
+}
+
+function getServerSnapshot() {
+  return serverSnapshot
+}
+
+if (typeof window !== "undefined") {
+  memory = loadLedger()
+}
+
+function write(next: Ledger) {
+  memory = next
+  saveLedger(next)
+  emit()
+}
 
 type FarmContextValue = {
   ledger: Ledger
@@ -43,23 +82,13 @@ type FarmContextValue = {
 const FarmContext = createContext<FarmContextValue | null>(null)
 
 export function FarmProvider({ children }: { children: React.ReactNode }) {
-  const [ledger, setLedger] = useState<Ledger>(() => loadLedger())
-  const [ready, setReady] = useState(false)
+  const ledger = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
   const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    setLedger(loadLedger())
-    setReady(true)
-  }, [])
-
-  useEffect(() => {
-    if (ready) saveLedger(ledger)
-  }, [ledger, ready])
 
   const run = useCallback((fn: (current: Ledger) => Ledger) => {
     try {
       setError(null)
-      setLedger((current) => fn(current))
+      write(fn(memory))
     } catch (err) {
       setError(err instanceof Error ? err.message : "Không thực hiện được.")
     }
@@ -68,7 +97,7 @@ export function FarmProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<FarmContextValue>(
     () => ({
       ledger,
-      ready,
+      ready: true,
       error,
       clearError: () => setError(null),
       makePassport: (input) => run((current) => createPassport(current, input)),
@@ -78,9 +107,9 @@ export function FarmProvider({ children }: { children: React.ReactNode }) {
       closeSeason: (input) => {
         try {
           setError(null)
-          const next = harvestSeason(ledger, input)
+          const next = harvestSeason(memory, input)
           const storyId = next.stories[next.stories.length - 1]?.id ?? null
-          setLedger(next)
+          write(next)
           return storyId
         } catch (err) {
           setError(err instanceof Error ? err.message : "Không chốt mùa được.")
@@ -88,7 +117,7 @@ export function FarmProvider({ children }: { children: React.ReactNode }) {
         }
       },
     }),
-    [error, ledger, ready, run],
+    [error, ledger, run],
   )
 
   return <FarmContext.Provider value={value}>{children}</FarmContext.Provider>
