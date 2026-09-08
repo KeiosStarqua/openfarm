@@ -1,0 +1,8 @@
+[package]
+name = "openfarm"
+edition = "2024.beta"
+version = "0.0.1"
+license = "MIT"
+
+[addresses]
+openfarm = "0x0"
