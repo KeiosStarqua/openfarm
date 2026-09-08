@@ -1,84 +1,77 @@
-# 🌾 OpenFarm SUI
+# OpenFarm
 
-> Turn liquidity providing into an interactive farming game on the Sui blockchain.
+> Từ ruộng đến bàn ăn — đọc được cả mùa vụ.
 
-OpenFarm SUI makes DeFi liquidity provision feel like tending a farm. Each "crop" you
-plant represents a real liquidity-provider (LP) position in a [Cetus](https://www.cetus.zone/)
-CLMM pool. As your position earns fees, drifts in or out of its price range, and ages, the
-crop is a **dynamic NFT** whose appearance evolves to reflect those real-time DeFi metrics.
+OpenFarm dùng blockchain **Sui** để đưa người tiêu dùng đến gần nông dân.
+Nông dân ghi nhật ký trồng trọt và sản xuất. Mỗi mùa vụ trở thành một
+**Harvest Story** công khai. Người mua quét QR trên sản phẩm (hoặc mở liên
+kết câu chuyện) và thấy người đã trồng, thửa ruộng, và từng bước của mùa vụ.
 
-Healthy, in-range, fee-earning positions grow into thriving crops. Out-of-range or idle
-positions wither. The farm becomes a living, glanceable visualization of your DeFi portfolio
-— and a game you actually want to come back to.
+Đây không phải game canh tác ảo, cũng không phải sàn DeFi. OpenFarm là lớp
+tin cậy nông nghiệp: dữ liệu quá trình sản xuất do nông dân thu thập, người
+mua đọc được trước khi tin.
 
-The idea was originally conceived by **Henry Nguyen**, and an earlier version was built and
-submitted to the **Hack the Farm** hackathon.
-
----
-
-## ✨ Features
-
-- **🌱 Farm Slots & Land System** — Plant seeds that represent LP tokens from Cetus CLMM pools. Each land slot holds one position.
-- **🪴 Dynamic NFT Crops** — A crop's appearance evolves based on **fee earnings**, **price-range health** (in/out of range), and **time in position**.
-- **🏆 Social & Competitive Elements** — Leaderboards, farm sharing, and achievement systems to drive engagement.
-- **📚 Educational Onboarding** — Farming metaphors abstract away DeFi complexity, making concentrated-liquidity concepts approachable for newcomers.
-- **📜 Move Smart Contracts** — On-chain logic for farm management, crop lifecycle, NFT minting/evolution, and reward distribution.
-
-### 🔭 What's next
-
-- Multi-protocol support (beyond Cetus)
-- DAO governance
-- Mobile app
-- Cross-chain expansion
+Ý tưởng ban đầu: **Henry Nguyen**. Phát triển: **Tạ Quang Khôi**. Tiền thân:
+Hack the Farm.
 
 ---
 
-## 🧱 Tech Stack
+## Người dùng làm gì
 
-| Layer            | Technology                          |
+### Nông dân
+
+1. Tạo **Farmer Passport** (tên, vùng, lời giới thiệu).
+2. Đăng ký **nông trại**.
+3. Mở **mùa vụ** (loại cây / vật nuôi).
+4. Ghi sự kiện: gieo, tưới, bón, kiểm tra sâu bệnh, thời tiết, thu hoạch, đóng gói.
+5. Chốt mùa — phát hành Harvest Story và lô sản phẩm (Product Batch).
+
+### Người tiêu dùng
+
+1. Mở chợ câu chuyện hoặc quét QR trên sản phẩm.
+2. Đọc Passport của nông dân, thông tin ruộng, và dòng thời gian sản xuất.
+3. Biết mình đang mua từ ai — không chỉ mua một nhãn.
+
+---
+
+## Tech stack
+
+| Layer | Technology |
 | ---------------- | ----------------------------------- |
-| Blockchain       | [Sui](https://sui.io/)              |
-| Smart contracts  | [Move](https://docs.sui.io/concepts/sui-move-concepts) |
-| Liquidity / CLMM | [Cetus CLMM](https://www.cetus.zone/) |
-| NFTs             | Sui dynamic NFTs (on-chain evolving metadata) |
-| Frontend         | [Next.js](https://nextjs.org/)      |
-| Mobile           | [Flutter](https://flutter.dev/)       |
+| Blockchain | [Sui](https://sui.io/) |
+| Smart contracts | [Move](https://docs.sui.io/concepts/sui-move-concepts) |
+| Media / memory | [Walrus](https://www.walrus.xyz/) blob ids on production events |
+| Records | Farmer Passport, Farm, Season, Harvest Story, Product Batch |
+| Frontend | [Next.js](https://nextjs.org/) |
 
 ---
 
-## 🏗️ Architecture (high level)
+## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                      Next.js Frontend                     │
-│   Farm UI · crop rendering · leaderboards · onboarding    │
-└───────────────┬───────────────────────┬──────────────────┘
-                │ Sui TS SDK / dApp Kit  │
-┌───────────────▼───────────────┐   ┌────▼─────────────────┐
-│        Move Smart Contracts    │   │     Cetus CLMM       │
-│  • farm        (land/slots)    │◄──┤  LP positions, fees, │
-│  • crop        (lifecycle/NFT) │   │  price ranges        │
-│  • evolution   (metric → art)  │   └──────────────────────┘
-│  • rewards     (distribution)  │
-└────────────────────────────────┘
+Nông dân ghi nhật ký ──► Season (Sui shared object)
+        │                      │
+        │                      ▼
+        │              Harvest Story (công khai)
+        │                      │
+        │                      ├── Walrus: ảnh / video mùa vụ
+        │                      └── Product Batch NFT ──► người mua
+        ▼
+Người tiêu dùng quét QR / mở /cau-chuyen/[id]
 ```
 
-The frontend reads on-chain Cetus position data, the Move contracts wrap those positions as
-evolving crop NFTs, and an evolution module maps live DeFi metrics (fees, range health, age)
-to the crop's on-chain appearance state.
+Chi tiết: [`docs/architecture.md`](./docs/architecture.md) và
+[`docs/harvest-story.md`](./docs/harvest-story.md).
 
 ---
 
-## 🚀 Getting Started
-
-> ⚠️ Project scaffolding is in progress. The steps below describe the intended layout; update
-> them as the Move package and frontend are added.
+## Getting started
 
 ### Prerequisites
 
-- [Sui CLI](https://docs.sui.io/guides/developer/getting-started/sui-install)
-- [Node.js](https://nodejs.org/) 18+ and a package manager (pnpm/npm/bun)
-- A Sui wallet (e.g. [Sui Wallet](https://chromewebstore.google.com/detail/sui-wallet/opcgpfmipidbgpenhmajoajpbobppdil)) funded on testnet
+- [Sui CLI](https://docs.sui.io/guides/developer/getting-started/sui-install) (1.45+)
+- [Node.js](https://nodejs.org/) 18+ and [pnpm](https://pnpm.io/)
+- A Sui wallet funded on **testnet** when you publish contracts
 
 ### Smart contracts (Move)
 
@@ -91,37 +84,47 @@ sui client publish --gas-budget 100000000
 
 ### Frontend (Next.js)
 
+The app ships with a local ledger that mirrors the Move types so the farmer
+journal and consumer story work before a package is published.
+
 ```bash
 cd app
 pnpm install
 pnpm dev
 ```
 
----
+Open [http://localhost:3000](http://localhost:3000). Farmer journal:
+`/nong-dan`. Consumer stories: `/cho` and `/cau-chuyen/ruong-nha-bay`.
 
-## 🏁 Sui Overflow 2026
-
-OpenFarm is being prepared for **[Sui Overflow 2026](https://overflow.sui.io/)** (May–August 2026,
-$1M+ in prizes & seed funding). Each project must select exactly **one** track.
-
-**Current track shortlist:** Walrus Track if the team adopts the AI/persistent-memory pitch;
-otherwise DeFi & Payments if OpenFarm adds and foregrounds a concrete PTB escrow/payment
-primitive. See [`AGENTS.md`](./AGENTS.md) for the full track analysis and rationale.
+```bash
+pnpm test
+pnpm lint
+```
 
 ---
 
-## 🔗 Links
+## Sui Overflow 2026
+
+OpenFarm is being prepared for **[Sui Overflow 2026](https://overflow.sui.io/)**.
+Each project must select exactly **one** track.
+
+**Recommended track: Walrus** — farm photos and season memory are the consumer
+artifact. See [`AGENTS.md`](./AGENTS.md) and [`STRATEGY.md`](./STRATEGY.md).
+
+---
+
+## Links
 
 - Product page: [taquangkhoi.com/en/products/open-farm](https://taquangkhoi.com/en/products/open-farm)
 - Devpost: [devpost.com/software/open-farm-sui](https://devpost.com/software/open-farm-sui)
 - X / Twitter: [@OpenFarmSUI](https://x.com/OpenFarmSUI)
 - Demo video: [youtube.com/watch?v=ROXPz9D5m_4](https://www.youtube.com/watch?v=ROXPz9D5m_4)
 
-## 🙏 Credits
+## Credits
 
 - Original idea: **Henry Nguyen**
 - Built by: **[Tạ Quang Khôi](https://taquangkhoi.com/)**
 
-## 📄 License
+## License
 
 See [LICENSE](./LICENSE).

@@ -1,4 +1,4 @@
-# AGENTS.md — OpenFarm SUI
+# AGENTS.md — OpenFarm
 
 Guidance for AI coding agents (and humans) working on this repository.
 
@@ -6,49 +6,53 @@ Guidance for AI coding agents (and humans) working on this repository.
 
 ## 1. What this project is
 
-**OpenFarm SUI** turns liquidity providing into an interactive farming game on the **Sui**
-blockchain. Users tend virtual crops that represent their LP positions in **Cetus CLMM** pools.
-Each crop is a **dynamic NFT** whose on-chain appearance evolves from real-time DeFi metrics:
+**OpenFarm** uses the **Sui** blockchain to bring consumers closer to farmers.
+Farmers collect data about how they plant and produce food. Each growing
+season becomes a public, verifiable **Harvest Story**. A consumer scans a product
+QR (or opens a story link) and sees the farmer, the farm, and the production
+journal — not a brand slogan.
 
-- **Fee earnings** — more fees → healthier / more valuable crop.
-- **Price-range health** — in-range vs. out-of-range affects whether the crop thrives or withers.
-- **Time in position** — age changes the crop's growth stage.
+In one line: **an agricultural trust layer that turns planting and production
+records into a consumer-facing story of the farm.**
 
-It is, in one line: **a consumer-facing gamification + dynamic-NFT layer on top of existing Sui DeFi.**
-It does **not** create a new financial primitive or payment rail — it *consumes* Cetus CLMM.
-
-Original idea: Henry Nguyen. Built by Tạ Quang Khôi. Prior submission: "Hack the Farm".
+Original idea: Henry Nguyen. Built by Tạ Quang Khôi. Prior submission:
+"Hack the Farm". This repo previously explored a Cetus LP farming-game pitch;
+the product is now the farm-to-consumer record, not a DeFi visualizer.
 
 ---
 
 ## 2. Tech stack & conventions
 
-| Area            | Choice |
+| Area | Choice |
 | --------------- | ------ |
-| Chain           | Sui |
-| Contracts       | Move (Sui Move) |
-| DeFi source     | Cetus CLMM (LP positions, fees, price ranges) |
-| NFTs            | Sui dynamic NFTs — appearance state lives/evolves on-chain |
-| Frontend        | Next.js |
-| Mobile          | Flutter |
+| Chain | Sui |
+| Contracts | Move (Sui Move) |
+| Domain objects | Farmer Passport, Farm, Season journal, Harvest Story, Product Batch |
+| Media / long memory | Walrus blob ids referenced from production events |
+| NFTs | Harvest Story (public record) and Product Batch (transferable to the buyer) |
+| Frontend | Next.js |
+| Mobile | Flutter (later) |
 
 Conventions for agents:
 
-- **Move first.** Model the domain (farm, land slot, crop, evolution, rewards) as Move objects
-  before writing UI. Keep evolution logic (metric → appearance state) on-chain so the NFT is
-  verifiably dynamic, not just a frontend skin.
-- **Read Cetus, don't reinvent it.** OpenFarm wraps Cetus positions; it must not fork or
-  duplicate Cetus pool logic.
+- **Move first.** Model passport, farm, season, story, and product as Move
+  objects before adding UI chrome. The journal is the source of truth, not a
+  frontend-only diary.
+- **Farmers write, consumers read.** Only the farm owner may append production
+  events or harvest a season. Stories are shared objects so anyone can read them.
+- **Walrus for media, Sui for the record.** Photos and long notes live on Walrus;
+  the on-chain event stores the blob id and the timestamp.
 - **Testnet by default.** Publish and test on Sui testnet; never assume mainnet keys.
 - **No secrets in the repo.** Keys, mnemonics, and `.env` files stay out of git.
-- Prefer the project package managers and the Sui CLI; do not introduce a different chain or
-  framework without an explicit decision recorded here.
+- Prefer the project package managers and the Sui CLI; do not introduce a
+  different chain or framework without an explicit decision recorded here.
 
-Expected layout (create as the project grows):
+Layout:
 
 ```
-move/   # Sui Move package: farm, crop, evolution, rewards modules
-app/    # Next.js frontend
+move/   # Sui Move package: passport, farm, season, story
+app/    # Next.js frontend: farmer journal + consumer story
+docs/   # Architecture and integration notes
 ```
 
 ---
@@ -56,8 +60,7 @@ app/    # Next.js frontend
 ## 3. Sui Overflow 2026 — track selection
 
 The user is entering **[Sui Overflow 2026](https://overflow.sui.io/)** (May-Aug 2026, $1M+ pool).
-**Each project must pick exactly ONE track.** Current working assumption: the active Sui Overflow
-2026 tracks are the four problem statements linked by the team.
+**Each project must pick exactly ONE track.**
 
 ### Current tracks
 
@@ -68,89 +71,41 @@ The user is entering **[Sui Overflow 2026](https://overflow.sui.io/)** (May-Aug 
 | Walrus Track | https://mystenlabs.notion.site/walrus-track-problem-statement |
 | DeepBook Predict | https://mystenlabs.notion.site/deepbook-predict-problem-statement |
 
-> Do not use "Entertainment & Culture / ONE Championship" as a current track. That was an
-> outdated/incorrect carryover from an older track analysis, not one of the four current choices.
+> Do not use "Entertainment & Culture / ONE Championship" as a current track.
 
 ### Fit assessment
 
-**Recommended if the team accepts the AI/persistent-memory pivot: Walrus Track.**
+**Recommended: Walrus Track.**
 
-- **Why Walrus Track fits Open Farm:**
-  - Open Farm already uses Walrus for "farm memories and harvest media" (season logs, images/videos)
-  - Walrus Track addresses "AI agents are fundamentally stateless — lose context across sessions"
-  - AI Farm Copilot can become an **AI Agent with long-term memory** via Walrus persistence
+OpenFarm's consumer promise depends on durable farm memory: season logs,
+field photos, pest images, and harvest media. Walrus holds that memory;
+Sui stores the verifiable journal that points at it. A consumer scanning a
+QR is reading a persistent artifact, not a session-only page.
 
-- **How to pivot Open Farm for Walrus Track:**
-  - **Artifact-driven workflows:** AI Copilot reads historical farm data (moisture, fertilizer history, pest images from prior seasons) stored permanently on Walrus (Harvest Story) to make current decisions
-  - **Long-term memory:** AI remembers last year's drought conditions to issue early irrigation warnings this season — data is persistent and verifiable
-  - **Cross-workflow context:** Farm data stored on Walrus also creates the "Farmer Passport" and QR Code for end consumers to scan
+**Fallback: DeFi & Payments** — only after Harvest Story is real and the team
+adds a concrete PTB (e.g. pay the farmer and receive the Product Batch in one
+atomic transaction). Do not pitch a payment rail before the production record
+exists.
 
-- **Proposed project name:** "Open Farm: AI-powered Agricultural Trust Layer with Persistent Walrus Memory"
+**Not recommended: DeepBook Predict.** This product is farm provenance, not a
+prediction market.
 
-**Fallback if the team wants the DeFi path: DeFi & Payments.**
-
-If the team commits to the **DeFi & Payments** core track, here are two concrete niches
-and PTB design patterns that align OpenFarm's consumer-facing farming game with the
-track's focus on *programmable money*.
-
-#### 1. Trust-Minimized Finance
-
-OpenFarm solves a "trust gap in agriculture". This niche applies directly:
-
-- **How to apply:** Integrate milestone-based escrow or conditional execution contracts.
-- **Real example:** Buyer locks payment in a smart contract on Sui. Funds auto-disburse to the
-  farmer when the "Harvest Story" (Season Log NFT) records key milestones: seeds planted →
-  AI pest inspection passed → harvest completed.
-- **Upside:** Minimizes risk for buyers, ensures transparent capital flow for farmers — aligned
-  with "automated enforcement".
-
-#### 2. Payments & Consumer Finance
-
-OpenFarm's **Open Market** (direct market) feature maps to this niche:
-
-- **How to apply:** Merchant payment system combined with anonymous smart wallets (via zkLogin).
-- **Real example:** User scans a QR code to read a farm's story, taps buy — payment goes
-  directly to the farmer's wallet with no intermediary.
-
-#### PTB tips — atomic "Buy Farm Product" transaction
-
-Design a **single atomic transaction** (Programmable Transaction Block) triggered when a user
-clicks "Buy":
-
-```
-1. Deduct stablecoin/SUI from buyer's wallet.
-2. Transfer funds to farmer's wallet.
-3. Transfer ownership of the farm-product NFT to the buyer's wallet.
-4. Auto-credit trust score to the "Farmer Passport".
-5. Route 1% of transaction to the environmental protection fund (Green Points).
-```
-
-Turn static fund transfers into **programmable money flows** — exactly what the DeFi &
-Payments track rewards: *"Build something that makes money move smarter."*
-
-**Not recommended as currently scoped: DeepBook Predict.** OpenFarm uses **Cetus CLMM**, not
-DeepBook, and does not currently center prediction markets. Choose this only after a deliberate
-product pivot.
-
-**Agentic Web is a possible but weaker fit unless the AI Copilot becomes the core product.**
-If OpenFarm is pitched mainly as autonomous farm agents coordinating actions across wallets,
-data, and marketplaces, revisit this track. As currently framed, Walrus or DeFi is cleaner.
+**Agentic Web is a later fit** if an AI Farm Copilot that *reads* Walrus season
+memory becomes the core, not a side feature.
 
 ---
 
 ## 4. Useful links
 
 - Hackathon: https://overflow.sui.io/
-- Agentic Web track: https://mystenlabs.notion.site/agentic-web-problem-statement
-- DeFi & Payments track: https://mystenlabs.notion.site/defi-payments-problem-statement
 - Walrus track: https://mystenlabs.notion.site/walrus-track-problem-statement
-- DeepBook Predict track: https://mystenlabs.notion.site/deepbook-predict-problem-statement
+- DeFi & Payments track: https://mystenlabs.notion.site/defi-payments-problem-statement
 - Product page: https://taquangkhoi.com/en/products/open-farm
 - Devpost: https://devpost.com/software/open-farm-sui
 - X: https://x.com/OpenFarmSUI
 - Demo: https://www.youtube.com/watch?v=ROXPz9D5m_4
 - Sui docs: https://docs.sui.io/ · Move intro: https://github.com/sui-foundation/sui-move-intro-course
-- Cetus: https://www.cetus.zone/
+- Walrus: https://www.walrus.xyz/
 
 ---
 
@@ -160,6 +115,8 @@ data, and marketplaces, revisit this track. As currently framed, Walrus or DeFi 
 - Don't commit secrets, build artifacts, or large generated files.
 - When a decision changes the stack or track, update this `AGENTS.md` so it stays the source of truth.
 - Verify Move builds (`sui move build` / `sui move test`) before claiming contract work is done.
+- The Next.js app may run a local ledger that mirrors Move types for demo; keep
+  those types aligned with `move/sources`.
 
 ## ACLI (Atlassian CLI) — Jira Issue Management
 
@@ -188,36 +145,11 @@ acli jira workitem search --jql "project = PROJ AND assignee = currentUser()" --
 # JSON output for scripting
 acli jira workitem search --jql "project = PROJ" --json
 
-# CSV export
-acli jira workitem search --jql "project = PROJ" --csv
-
-# Fetch all results (paginate)
-acli jira workitem search --jql "project = PROJ" --paginate
-
-# Select specific fields
-acli jira workitem search --jql "project = PROJ" --fields "key,summary,assignee,status"
-
-# Count results
-acli jira workitem search --jql "project = PROJ" --count
-
 # Get single issue details
 acli jira workitem get PROJ-123
-
-# Create an issue
-acli jira workitem create --project PROJ --type Task -s "Summary here" -d "Description"
-
-# Transition issue status
-acli jira workitem transition PROJ-123 --transition "In Progress"
-
-# List projects
-acli jira project list --limit 50
-
-# List project keys (JSON + jq)
-acli jira project list --limit 50 --json | jq '.[].key'
 ```
 
 ### Tips
 
 - Use `--json` + `jq` for scripting pipelines
-- Use `--csv` for spreadsheet/report exports
 - Pipe through `jq '.[].key'` to extract issue/project keys
