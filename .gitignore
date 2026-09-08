@@ -2,3 +2,11 @@
 codedb.snapshot
 .agent_context
 docs/team/*
+app/node_modules/
+app/.next/
+app/out/
+move/build/
+move/.sui/
+**/.DS_Store
+.env
+.env.*

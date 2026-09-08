@@ -1,0 +1,382 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f1e6cf;
+  --paper-2: #e7d5b1;
+  --ink: #1c2618;
+  --moss: #355734;
+  --moss-2: #243c23;
+  --clay: #b6532f;
+  --straw: #d9b45c;
+  --field: #6f8f4a;
+  --line: rgba(28, 38, 24, 0.16);
+}
+
+@theme inline {
+  --font-sans: var(--font-be);
+  --font-display: var(--font-fraunces);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(217, 180, 92, 0.28), transparent 28rem),
+    linear-gradient(180deg, var(--paper) 0%, #eadcc0 100%);
+  font-family: var(--font-be), "Be Vietnam Pro", sans-serif;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  width: min(1080px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1.5rem 0 4rem;
+  flex: 1;
+}
+
+.site-header,
+.site-footer {
+  width: min(1080px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 0 0.5rem;
+}
+
+.wordmark {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.wordmark strong {
+  display: block;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.02em;
+}
+
+.wordmark em {
+  display: block;
+  font-style: normal;
+  font-size: 0.78rem;
+  opacity: 0.72;
+}
+
+.stamp {
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 2px solid var(--ink);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 700;
+  background: var(--straw);
+}
+
+.site-header nav {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.site-header nav a {
+  text-decoration: none;
+  color: inherit;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid transparent;
+}
+
+.site-header nav a[data-current] {
+  border-color: var(--ink);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.hero {
+  padding: 2.5rem 0 1rem;
+}
+
+.hero h1,
+.desk h1,
+.story h1 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
+  line-height: 1.05;
+  font-weight: 700;
+  margin: 0.4rem 0 1rem;
+}
+
+.kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--clay);
+  margin: 0;
+}
+
+.lede {
+  font-size: 1.15rem;
+  max-width: 40rem;
+  line-height: 1.6;
+}
+
+.actions,
+.split,
+.steps {
+  display: grid;
+  gap: 1rem;
+}
+
+.actions {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin: 1.75rem 0 2.5rem;
+}
+
+.split {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  margin: 1rem 0 2rem;
+}
+
+.split div,
+.steps li,
+.panel,
+.passport-card,
+.cta-band,
+.share-card,
+.market a {
+  background: rgba(255, 250, 240, 0.55);
+  border: 1px solid var(--line);
+  padding: 1.15rem 1.2rem;
+}
+
+.steps {
+  list-style: none;
+  padding: 0;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.steps li strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0.85rem 1rem;
+  font: inherit;
+  font-weight: 600;
+}
+
+.btn.clay {
+  background: var(--clay);
+  color: #fff8ee;
+}
+
+.btn.moss {
+  background: var(--moss);
+  color: #f4f7e8;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cta-band {
+  margin-top: 2.5rem;
+}
+
+.desk,
+.story {
+  max-width: 760px;
+}
+
+.panel {
+  margin: 1.25rem 0;
+}
+
+.panel-form,
+.panel-form.inline {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.panel-form.inline {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  font-weight: 400;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--ink);
+  background: #fffaf1;
+  color: inherit;
+}
+
+.passport-card {
+  margin: 1rem 0;
+  border-left: 8px solid var(--moss);
+}
+
+.passport-card strong {
+  display: block;
+  font-size: 1.4rem;
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+
+.timeline {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  border-left: 2px solid var(--moss);
+}
+
+.timeline li {
+  padding: 0 0 1.2rem 1.1rem;
+  position: relative;
+}
+
+.timeline li::before {
+  content: "";
+  width: 0.7rem;
+  height: 0.7rem;
+  background: var(--straw);
+  border: 2px solid var(--ink);
+  position: absolute;
+  left: -0.42rem;
+  top: 0.2rem;
+}
+
+.timeline .when,
+.hint,
+.blob {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.banner.error {
+  background: #f4d2c2;
+  border: 1px solid var(--clay);
+  padding: 0.75rem 1rem;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem;
+}
+
+.facts div {
+  border-top: 1px solid var(--line);
+  padding-top: 0.5rem;
+}
+
+.facts dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+}
+
+.facts dd {
+  margin: 0.2rem 0 0;
+  font-weight: 600;
+}
+
+.market {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.market a {
+  display: grid;
+  gap: 0.25rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.market .place {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--clay);
+}
+
+.market strong {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.5rem;
+}
+
+.share-card {
+  margin-top: 2rem;
+}
+
+.share-card code,
+.blob {
+  display: block;
+  overflow-wrap: anywhere;
+  margin: 0.6rem 0;
+}
+
+.story-list {
+  padding-left: 1.1rem;
+}
+
+.site-footer {
+  padding: 1.5rem 0 2rem;
+  opacity: 0.75;
+  font-size: 0.9rem;
+}
+
+.harvest-box {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--ink);
+}
+
+@media (max-width: 720px) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
