@@ -9,8 +9,7 @@ export function StoryArticle({ id }: { id: string }) {
   const { ledger, ready } = useFarm()
   const story = useMemo(() => ledger.stories.find((item) => item.id === id), [id, ledger.stories])
   const [copied, setCopied] = useState(false)
-  const origin = typeof window === "undefined" ? "" : window.location.origin
-  const shareUrl = `${origin}/cau-chuyen/${id}`
+  const sharePath = `/cau-chuyen/${id}`
 
   if (!ready) return <p className="hint">Đang mở nhật ký...</p>
   if (!story) {
@@ -62,12 +61,12 @@ export function StoryArticle({ id }: { id: string }) {
       <aside className="share-card">
         <h2>Đưa câu chuyện lên bao bì</h2>
         <p>In QR hoặc dán liên kết này lên lô hàng. Người mua mở là gặp ruộng.</p>
-        <code>{shareUrl}</code>
+        <code>{sharePath}</code>
         <button
           type="button"
           className="btn moss"
           onClick={async () => {
-            await navigator.clipboard.writeText(shareUrl)
+            await navigator.clipboard.writeText(`${window.location.origin}${sharePath}`)
             setCopied(true)
           }}
         >

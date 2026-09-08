@@ -3,6 +3,7 @@ export function formatDate(ms: number) {
     day: "numeric",
     month: "long",
     year: "numeric",
+    timeZone: "Asia/Ho_Chi_Minh",
   }).format(new Date(ms))
 }
 
@@ -13,6 +14,7 @@ export function formatDateTime(ms: number) {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "Asia/Ho_Chi_Minh",
   }).format(new Date(ms))
 }
 

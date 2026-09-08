@@ -48,7 +48,10 @@ function getServerSnapshot() {
 }
 
 if (typeof window !== "undefined") {
-  memory = loadLedger()
+  queueMicrotask(() => {
+    memory = loadLedger()
+    emit()
+  })
 }
 
 function write(next: Ledger) {
